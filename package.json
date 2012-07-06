@@ -1,0 +1,21 @@
+{
+  "name": "node_apns",
+  "description": "Apple Push Notifier for node.js",
+  "version": "0.0.1",
+  "author": {
+    "name": "Thierry Passeron",
+    "email": "thierry.passeron@gmail.com"
+  },
+  "keywords": [
+    "apple",
+    "push",
+    "notification",
+    "iOS",
+    "apns"
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Orion98MC/node_apns.git"
+  }
+}
