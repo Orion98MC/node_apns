@@ -170,7 +170,9 @@ n = Notification(tokenString, {foo: "bar"});
 n = Notification(tokenString, {foo: "bar", aps:{alert:"Hello world!", sound:"bipbip.aiff"}});
 ```
 
-### Setter/Accessors
+### Accessors
+
+#### Payload properties
 
 * notification.alert
 * notification.badge
@@ -193,6 +195,17 @@ n.sound = "TheLoveBoat.aiff";
 ```
 
 Beware that notification.{alert|badge|sound} will overwrite the content of notification.payload.aps if it exists prior to using them.
+
+#### Other properties
+
+* notification.device: get or set the Device object
+* notification.encoding: get or set the notification encoding (default is "utf8")
+
+#### Enhenced notification properties
+
+* notification.expiry: get or set the enhenced notification expiry
+* notification.identifier: get the notification unique identifier as set (by the push object) when written to the cleartextStream
+
 
 ### Checkings
 
