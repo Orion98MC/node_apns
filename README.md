@@ -26,14 +26,6 @@ var push = Push({
 });
 ```
 
-Create a new Notification
-
-```js
-var Notification = require('node_apns').Notification
-,	n = Notification("abcdefghabcdefgh", {foo: "bar", aps:{"alert":"Hello world!", "sound":"default"}});
-                      /*  ^----- fake device token hex string */
-```
-
 Register for events
 
 ```js
@@ -50,6 +42,16 @@ push.on('notificationError', function (errorCode, uid) {
 	console.log('Notification with uid', uid, 'triggered an error:', require('node_apns').APNS.errors[errorCode]);
 
 });
+
+push.on('error', function (error) { console.log('Yipikaye!', error); });
+```
+
+Create a new Notification
+
+```js
+var Notification = require('node_apns').Notification
+,	n = Notification("abcdefghabcdefgh", {foo: "bar", aps:{"alert":"Hello world!", "sound":"default"}});
+                      /*  ^----- fake device token hex string */
 ```
 
 Send the notification
@@ -60,6 +62,8 @@ if (n.isValid()) push.sendNotification(n);
 
 
 The connexion is on-demand and will only be active when a notification needs to be sent. After a first notification, it will stay opened until it dies. When it dies, a new notification will trigger the re-connexion.
+
+For everything to work nicely, you should you register for 'error' events (push.on('error', function() {...})) to prevent the node's runloop from throwing exceptions when they occur.
 
 ### Constructor
 
@@ -165,6 +169,30 @@ n = Notification(tokenString, {foo: "bar"});
 // Create a notification with device and full payload
 n = Notification(tokenString, {foo: "bar", aps:{alert:"Hello world!", sound:"bipbip.aiff"}});
 ```
+
+### Setter/Accessors
+
+* notification.alert
+* notification.badge
+* notification.sound
+
+If you need to specify a custom key, then use:
+
+* notification.payload = {...custom-content...}
+
+Example:
+
+```js
+n = Notification();
+n.payload = {
+	from: "terminator",
+	to: "rocky-balboa"
+};
+n.alert = "Diner tonight?";
+n.sound = "TheLoveBoat.aiff";
+```
+
+Beware that notification.{alert|badge|sound} will overwrite the content of notification.payload.aps if it exists prior to using them.
 
 ### Checkings
 
