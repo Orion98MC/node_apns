@@ -1,8 +1,9 @@
 # Apple Push Notifier for node.js
 
-This library helps you send notifications to iOS devices through Apple's Push Notification Service from the wonderful world of node.js.
+This library helps you send notifications to iOS devices through Apple's Push Notification Service from the wonderful world of Node.js (http://nodejs.org/).
 
-The connecting classes (Push and Feedback) are EventEmitter-s and publish a large number of events for you to interface your code.
+The Push and Feedback objects are EventEmitter-s and publish a large number of events for you to interface your code.
+
 Both simple and enhenced notifications are handled. 
 
 
@@ -33,12 +34,6 @@ var Notification = require('node_apns').Notification
                       /*  ^----- fake device token hex string */
 ```
 
-Send the notification
-
-```js
-if (n.isValid()) push.sendNotification(n);
-```
-
 Register for events
 
 ```js
@@ -56,6 +51,13 @@ push.on('notificationError', function (errorCode, uid) {
 
 });
 ```
+
+Send the notification
+
+```js
+if (n.isValid()) push.sendNotification(n);
+```
+
 
 The connexion is on-demand and will only be active when a notification needs to be sent. After a first notification, it will stay opened until it dies. When it dies, a new notification will trigger the re-connexion.
 
@@ -88,7 +90,8 @@ Push objects emit these events:
 
 ### Additional methods
 
-* push.close([Bool now]): force the closing of a connexion.
+* push.close([Bool now]): force the closing of a connexion. If now is not specified (default), "After the write queue is drained, close".
+
 
 ## Feedback
 
@@ -120,7 +123,7 @@ feedback.on('end', function () {
 		verbose:<Bool | false>
 	}
 
-Feedback connexion stops after Apple closes the connexion.
+A feedback connexion is stopped by Apple when no more devices are to be reported.
 
 ### Events
 
@@ -131,6 +134,7 @@ Feedback objects emit these events:
 * 'end' when the server ended the connexion (FIN packet)
 * 'close' when the server closed the connexion
 * 'device' (uint time, String token) when a device token is reported by Apple
+
 
 ## Notification
 
