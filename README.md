@@ -8,6 +8,8 @@ Both simple and enhenced notifications are handled.
 
 ## Push
 
+### Basics
+
 First, require *node_apns*
 
 ```js
@@ -57,6 +59,19 @@ push.on('notificationError', function (errorCode, uid) {
 
 The connexion is on-demand and will only be active when a notification needs to be sent. After a first notification, it will stay opened until it dies. When it dies, a new notification will trigger the re-connexion.
 
+### Constructor
+
+	Push(tls_options, options)
+
+	tls_options: {cert:cert_data, key:key_data [,...]} // See Node.js documentation at http://nodejs.org/api/tls.html#tls_tls_connect_options_secureconnectlistener
+
+	options: {
+		host:<gateway-host | APNS.production.host>, 
+		port:<gateway-port | APNS.production.port>, 
+		enhenced:<Bool | true>,
+		verbose:<Bool | false>
+	}
+
 ### Events
 
 Push objects emit these events:
@@ -90,6 +105,21 @@ feedback.on('end', function () {
 	console.log('Done');
 });
 ```
+
+### Constructor
+
+	Feedback(tls_options, options)
+
+	tls_options: {cert:cert_data, key:key_data [,...]} // See Node.js documentation at http://nodejs.org/api/tls.html#tls_tls_connect_options_secureconnectlistener
+
+	options: {
+		host:<gateway-host | APNS.feedback.host>, 
+		port:<gateway-port | APNS.feedback.port>, 
+		
+		bufferSize:<uint | 1>, /* size of tuple buffer in tuples unit */
+		verbose:<Bool | false>
+	}
+
 
 ### Events
 
