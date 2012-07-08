@@ -1,5 +1,4 @@
-Apple Push Notifier for node.js
-===============================
+# Apple Push Notifier for node.js
 
 This library helps you send notifications to iOS devices through Apple's Push Notification Service from the wonderful world of node.js.
 
@@ -7,52 +6,60 @@ The connecting classes (Push and Feedback) are EventEmitter-s and publish a larg
 Both simple and enhenced notifications are handled. 
 
 
-Push
-====
+## Push
 
-Create a new on-demand push connexion:
+Require *node_apns*
 
-	var apns = require('node_apns')
-	,	Push = apns.Push
-	, 	Notification = apns.Notification
-	,	fs = require('fs');
+```js
+var Push = require('node_apns').Push;
+```
 
+Create a new on-demand push connexion
 
-	var push = Push({
-		cert: fs.readFileSync('./cert.pem'), 
-		key: fs.readFileSync('./key.pem')
-	});
+```js
+require fs = require('fs');
 
-Create a new Notification:
+var push = Push({
+	cert: fs.readFileSync('./cert.pem'), 
+	key: fs.readFileSync('./key.pem')
+});
+```
 
-	var n = Notification("abcdefghabcdefgh", {foo: "bar"});
-	n.sound = "default";
-	n.badge = 3;
+Create a new Notification
 
-Send a Notification:
+```js
+var Notification = require('node_apns').Notification
+,	n = Notification("abcdefghabcdefgh", {foo: "bar", aps:{"alert":"Hello world!", "sound":"default"}});
+                      /*  ^----- fake device token hex string */
+```
 
-	if (n.isValid()) push.sendNotification(n);
+Send the notification
 
-Register for events:
+```js
+if (n.isValid()) push.sendNotification(n);
+```
 
-	push.on('sent', function (notification) {
+Register for events
 
-		// The notification has been sent to the socket (it may be buffered if the network is slow...)
-		console.log('Sent', notification, 'uid=', notification.identifier);
+```js
+push.on('sent', function (notification) {
 
-	});
+	// The notification has been sent to the socket (it may be buffered if the network is slow...)
+	console.log('Sent', notification);
 
-	push.on('notificationError', function (errorCode, uid) {
+});
 
-		// Apple has returned an error:
-		console.log('Notification with uid', uid, 'triggered an error:', apns.APNS.errors[errorCode]);
+push.on('notificationError', function (errorCode, uid) {
 
-	});
+	// Apple has returned an error:
+	console.log('Notification with uid', uid, 'triggered an error:', apns.APNS.errors[errorCode]);
+
+});
+```
 
 The connexion is on-demand and will only be active when a notification needs to be sent. After a first notification, it will stay opened until it dies. When it dies, a new notification will trigger the re-connexion.
 
-Events
-------
+### Events
 
 Push objects emit these events:
 
@@ -61,33 +68,32 @@ Push objects emit these events:
 * 'error' (exception) when an error/exception occurs (ENOENT EPIPE etc...)
 * 'end' when the server ended the connexion (FIN packet)
 * 'close' when the server closed the connexion
-* 'notificationError' (errorCode, notificationUID) when Apple reports a *bad* notification
+* 'notificationError' (String errorCode, notificationUID) when Apple reports a *bad* notification
 * 'buffer' when the cleartextStream.write() returned false (meaning it is now buffering writes until next 'drain')
 * 'drain' when the cleartextStream is not buffering writes anymore
 * 'sent' (notification) when a notification has been written to the cleartextStream
 
-Additional methods
-------------------
+### Additional methods
 
 * push.close([Bool now]): force the closing of a connexion.
 
-Feedback
-========
+## Feedback
 
-Create an immediate feedback connexion:
+Create an immediate feedback connexion
 
-	var feedback = apns.Feedback({cert:cert_data, key:key_data});
+```js
+var feedback = apns.Feedback({cert:cert_data, key:key_data});
 
-	feedback.on('device', function (time, token) {
-		console.log('Token', token, 'did not respond to notification on', new Date(time * 1000));
-	});
+feedback.on('device', function (time, token) {
+	console.log('Token', token, 'did not respond to notification on', new Date(time * 1000));
+});
 
-	feedback.on('end', function () {
-		console.log('Done');
-	});
+feedback.on('end', function () {
+	console.log('Done');
+});
+```
 
-Events
-------
+### Events
 
 Feedback objects emit these events:
 
@@ -95,56 +101,137 @@ Feedback objects emit these events:
 * 'error' (exception) when an error/exception occurs (ENOENT EPIPE etc...)
 * 'end' when the server ended the connexion (FIN packet)
 * 'close' when the server closed the connexion
-* 'device' (time, token) when a device token is reported by Apple
+* 'device' (uint time, String token) when a device token is reported by Apple
 
-Notification
-============
+## Notification
 
 You can create Notification objects many different ways:
 
-	// Create a notification with no device and no payload
-	n = Notification(); 
-		n.device = apns.Device("abcdefabcdef");
-		n.alert = "Hello world!";
+```js
+var Device = require("node_apns").Device
+	tokenString = "abcdefghabcdefgh";
 
-	// Create a notification with no payload
-	n = Notification("abcdefabcdef"); 
-		n.alert = "Hello world!";
-		n.badge = 1;
+// Create a notification with no device and no payload
+n = Notification(); 
+	// then...
+	n.device = Device(tokenString); 
+	n.alert = "Hello world!";
 
-	// Create a notification with device and payload
-	n = Notification("abcdefabcdef", {foo: "bar"});
-		n.alert = "Hello world!";
-		n.sound = "default";
+// Create a notification with no payload
+n = Notification(tokenString); 
+	// then...
+	n.alert = "Hello world!";
+	n.badge = 1;
 
-	// Create a notification with device and full payload
-	n = Notification("abcdefabcdef", {foo: "bar", aps:{alert:"Hello world!", sound:"bipbip.aiff"}});
+// Create a notification with device and payload
+n = Notification(tokenString, {foo: "bar"});
+	// then...
+	n.alert = "Hello world!";
+	n.sound = "default";
 
-Checkings
----------
+// Create a notification with device and full payload
+n = Notification(tokenString, {foo: "bar", aps:{alert:"Hello world!", sound:"bipbip.aiff"}});
+```
+
+### Checkings
 
 You should always check the notification's validity before sending it.
 
-	if (n.isValid()) {
-		push.sendNotification(n);
-	} else {
-		console.log("Malformed notification", n);
-		// ... investigate ...
-	}
+```js
+if (n.isValid()) { push.sendNotification(n); } 
+else {
+	console.log("Malformed notification", n);
+	// ... investigate ...
+}
+```
 
-Device
-======
+## Device
 
-	// Create a device object with a token String
-	d = Device("abcdefabcdef");
+```js
+// Create a device object with a token (hex) String
+d = Device("abcdefabcdef");
 
-	// Create a device object with a Buffer (binary) token
-	var buffer = new Buffer(32);
-	d = Device(buffer);
+// Create a device object with a Buffer (binary) token
+var buffer = new Buffer(32);
+d = Device(buffer);
+```
 
-Checkings
----------
+### Checkings
 
 The token string must be a valid hex string. You can check it with the isValid() method:
 
-	if (d.isValid()) { ... }
+```js
+if (d.isValid()) { ... }
+```
+
+## "Constants"
+
+Apple's service define some properties that are accessible through the APNS exports
+
+```js
+var APNS = {
+	/*
+		SOURCE: http://developer.apple.com/library/ios/#DOCUMENTATION/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingWIthAPS/CommunicatingWIthAPS.html
+	*/
+
+	development: {
+		host: 'gateway.sandbox.push.apple.com',
+		port: 2195
+	},
+	production: {
+		host: 'gateway.push.apple.com',
+		port: 2195
+	},
+	feedback: {
+		port: 2196,
+		tupleSize: 38 /* The feedback binary tuple's size in Bytes (4 + 2 + 32) */
+	},
+	errors : {
+		'0': 'No errors encountered',
+		'1': 'Processing error',
+		'2': 'Missing device token',
+		'3': 'Missing topic',
+		'4': 'Missing payload',
+		'5': 'Invalid token size',
+		'6': 'Invalid topic size',
+		'7': 'Invalid payload size',
+		'8': 'Invalid token',
+		'255': 'None (unknown)'
+	}		
+};
+```
+
+You can use them for example to specify a development gateway to your Push connexion (default is the production gateway)
+
+```js
+var push = Push({cert:cert_data, key:key_data}, {
+	host: require('node_apns').APNS.development.host
+});
+```
+
+You can also use the errors to get a meaningful output of the errorCode provided by Apple when 'notificationError' occurs
+
+```js
+	push.on('notificationError', function (errorCode, notificationUID) {
+		console.log('Notification with UID', notifcationUID, 'Error:', require('node_apns').APNS.errors[errorCode]);
+	});
+```
+
+# License terms
+
+The MIT License
+
+Copyright (C) 2012 Thierry Passeron
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, 
+and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS IN THE SOFTWARE.
