@@ -63,7 +63,7 @@ if (n.isValid()) push.sendNotification(n);
 
 The connexion is on-demand and will only be active when a notification needs to be sent. After a first notification, it will stay opened until it dies. When it dies, a new notification will trigger the re-connexion.
 
-For everything to work nicely, you should you register for 'error' events (push.on('error', function() {...})) to prevent the node's runloop from throwing exceptions when they occur.
+For everything to work nicely, you should register for 'error' events (push.on('error', function() {...})) to prevent the node's runloop from throwing exceptions when they occur.
 
 ### Constructor
 
