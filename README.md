@@ -52,7 +52,7 @@ push.on('sent', function (notification) {
 push.on('notificationError', function (errorCode, uid) {
 
 	// Apple has returned an error:
-	console.log('Notification with uid', uid, 'triggered an error:', apns.APNS.errors[errorCode]);
+	console.log('Notification with uid', uid, 'triggered an error:', require('node_apns').APNS.errors[errorCode]);
 
 });
 ```
@@ -68,7 +68,7 @@ The connexion is on-demand and will only be active when a notification needs to 
 	options: {
 		host:<gateway-host | APNS.production.host>, 
 		port:<gateway-port | APNS.production.port>, 
-		enhenced:<Bool | true>,
+		enhenced:<Bool | true>, /* enhenced notifications or not */
 		verbose:<Bool | false>
 	}
 
@@ -120,6 +120,7 @@ feedback.on('end', function () {
 		verbose:<Bool | false>
 	}
 
+Feedback connexion stops after Apple closes the connexion.
 
 ### Events
 
@@ -137,7 +138,7 @@ You can create Notification objects many different ways:
 
 ```js
 var Device = require("node_apns").Device
-	tokenString = "abcdefghabcdefgh";
+,	tokenString = "abcdefghabcdefgh";
 
 // Create a notification with no device and no payload
 n = Notification(); 
