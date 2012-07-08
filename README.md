@@ -8,7 +8,7 @@ Both simple and enhenced notifications are handled.
 
 ## Push
 
-Require *node_apns*
+First, require *node_apns*
 
 ```js
 var Push = require('node_apns').Push;
@@ -17,11 +17,9 @@ var Push = require('node_apns').Push;
 Create a new on-demand push connexion
 
 ```js
-require fs = require('fs');
-
 var push = Push({
-	cert: fs.readFileSync('./cert.pem'), 
-	key: fs.readFileSync('./key.pem')
+	cert: require('fs').readFileSync('./cert.pem'), 
+	key: require('fs').readFileSync('./key.pem')
 });
 ```
 
@@ -82,7 +80,7 @@ Push objects emit these events:
 Create an immediate feedback connexion
 
 ```js
-var feedback = apns.Feedback({cert:cert_data, key:key_data});
+var feedback = require('node_apns').Feedback({cert:cert_data, key:key_data});
 
 feedback.on('device', function (time, token) {
 	console.log('Token', token, 'did not respond to notification on', new Date(time * 1000));
