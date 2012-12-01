@@ -1,7 +1,7 @@
 {
   "name": "node_apns",
   "description": "Apple Push Notifier for node.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": {
     "name": "Thierry Passeron",
     "email": "thierry.passeron@gmail.com"
