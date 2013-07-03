@@ -6,10 +6,51 @@ The Push and Feedback objects are EventEmitter-s and publish a large number of e
 
 Both simple and enhenced notifications are handled. 
 
+Also, a very simple service object helps you deal with notifications without trouble (checkout 'The Very Easy Way').
+
 
 ## Push
 
-### Basics
+### The Very Easy Way!
+
+* On demand connections to Apple (if the connection is stale it is remade automatically)
+* Automatic feedback queries on startup
+* Blacklist of erroneous tokens and feedback tokens
+* Auto recover on notification error
+* Callback when notification is accepted by Apple (and not just written to the socket) or when an error occures
+* Now you _can_ go to the coffee machine...
+
+=> find more in the source file _services.js_
+
+#### Example usage:
+
+```js
+
+var 
+  cert_and_key = require('fs').readFileSync('/Users/orion/Desktop/identity-dev.pem')
+  notifier = require('node_apns').services.Notifier({ cert: certkey, key: certkey }, true /* development = true, production = false */)
+  
+  
+ /* 
+   Now you may send notification!
+   I told you it was easy...
+ */
+ 
+ var Notification = require('node_apns').Notification;
+ 
+ notifier.notify(Notification("8badf00d", { aps: { alert: "Hello from service", sound: "default" }}), 
+   function (err) { 
+     if (!err) console.log("Sent", this); 
+     else console.log('Error', err, 'on', this);
+   }
+ );
+ 
+
+```
+
+
+
+### The Less Easy Way...
 
 First, require *node_apns*
 
