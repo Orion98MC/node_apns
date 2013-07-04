@@ -1,17 +1,18 @@
 # Apple Push Notifier for node.js
 
-This library helps you send notifications to iOS devices through Apple's Push Notification Service from the wonderful world of Node.js (http://nodejs.org/).
+node_apns helps you send notifications to iOS devices through Apple's Push Notification Service from Node.js (http://nodejs.org/).
 
-The Push and Feedback objects are EventEmitter-s and publish a large number of events for you to interface your code.
+# Key Features
 
-Both simple and enhenced notifications are handled. 
+* On demand Persistant Connections
+* EventEmitter Objects
+* Handle Enhenced and Simple notifications format
+* 20 seconds to get going...
 
-Also, a very simple service object helps you deal with notifications without trouble (checkout 'The Very Easy Way').
 
+## 20 Seconds Setup
 
-## Push
-
-### The Very Easy Way!
+The easiest way to get notifications going is to use the provided Notifier service. You instantaneously get:
 
 * On demand connections to Apple (if the connection is stale it is remade automatically)
 * Automatic feedback queries on startup
@@ -22,18 +23,17 @@ Also, a very simple service object helps you deal with notifications without tro
 
 => find more in the source file _services.js_
 
-#### Example usage:
+### Sample Usage
 
 ```js
 
 var 
-  cert_and_key = require('fs').readFileSync('/Users/orion/Desktop/identity-dev.pem')
-  notifier = require('node_apns').services.Notifier({ cert: certkey, key: certkey }, true /* development = true, production = false */)
+  cert_and_key = require('fs').readFileSync('/Users/orion/identity-dev.pem')
+  notifier = require('node_apns').services.Notifier({ cert: cert_and_key, key: cert_and_key }, true /* development = true, production = false */)
   
   
  /* 
-   Now you may send notification!
-   I told you it was easy...
+   Now you may send notifications!
  */
  
  var Notification = require('node_apns').Notification;
@@ -49,8 +49,9 @@ var
 ```
 
 
-
-### The Less Easy Way...
+# API
+## Push
+### Example
 
 First, require *node_apns*
 
