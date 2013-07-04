@@ -12,6 +12,8 @@ node_apns helps you send notifications to iOS devices through Apple's Push Notif
 
 ## 20 Seconds Setup
 
+The easiest way to get notifications going is to use the provided Notifier service. You instantaneously get:
+
 * On demand connections to Apple (if the connection is stale it is remade automatically)
 * Automatic feedback queries on startup
 * Blacklist of erroneous tokens and feedback tokens
@@ -21,7 +23,7 @@ node_apns helps you send notifications to iOS devices through Apple's Push Notif
 
 => find more in the source file _services.js_
 
-### Example
+### Example Usage
 
 ```js
 
