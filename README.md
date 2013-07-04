@@ -23,7 +23,7 @@ The easiest way to get notifications going is to use the provided Notifier servi
 
 => find more in the source file _services.js_
 
-### Example Usage
+### Sample Usage
 
 ```js
 
